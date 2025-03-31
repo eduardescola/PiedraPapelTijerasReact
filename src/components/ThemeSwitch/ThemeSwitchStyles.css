@@ -1,0 +1,42 @@
+.dark-theme {
+    background-color: #121212;
+    color: #fff;
+}
+
+body {
+    background-color: #fff;
+    color: #000;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-theme .css-sziceh-MuiButtonBase-root-MuiButton-root.Mui-disabled{
+    background-color: white;
+
+}
+
+.dark-theme input{
+    color: white;
+}
+
+.dark-theme .MuiOutlinedInput-notchedOutline.css-1ll44ll-MuiOutlinedInput-notchedOutline{
+    border-color: white;
+}
+
+.dark-theme .MuiOutlinedInput-notchedOutline.css-1ll44ll-MuiOutlinedInput-notchedOutline:hover{
+    border: solid;
+    border-color: white;
+}
+
+.dark-theme .MuiFormControl-root.MuiFormControl-marginNormal.MuiFormControl-fullWidth.MuiTextField-root.css-16bevx5-MuiFormControl-root-MuiTextField-root label{
+    color: white;
+}
+
+.dark-theme textarea{
+    border-color: white;
+    color: white;
+}
+
+.dark-theme textarea :hover{
+    border: solid;
+    border-color: white;
+}
