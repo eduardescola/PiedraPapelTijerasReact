@@ -10,15 +10,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onStartGame }) => {
   const [name, setName] = useState("");
   const [photo, setPhoto] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isCameraOn, setIsCameraOn] = useState(false);
   const webcamRef = useRef<Webcam>(null);
-
-  const images = [
-    "https://via.placeholder.com/150/FF5733",
-    "https://via.placeholder.com/150/33FF57",
-    "https://via.placeholder.com/150/3357FF",
-    "https://via.placeholder.com/150/FF33A1",
-    "https://via.placeholder.com/150/A1FF33",
-  ];
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -36,11 +29,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onStartGame }) => {
     }
   };
 
-  const handleSelectImage = (image: string) => {
-    setImagePreview(image);
-    setPhoto(image);
-  };
-
   const capturePhoto = () => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
@@ -55,12 +43,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onStartGame }) => {
 
       <Avatar alt="Perfil" src={imagePreview || undefined} sx={{ width: 100, height: 100, marginBottom: 2 }} />
 
-      
       <input type="file" accept="image/*" onChange={handleImageChange} />
       
       <Typography variant="body1" marginTop={2}>O usa la cámara:</Typography>
-      <Webcam ref={webcamRef} screenshotFormat="image/png" className="w-64 h-48 border" />
-      <Button onClick={capturePhoto} variant="outlined" sx={{ marginTop: 1 }}>Tomar Foto</Button>
+      {isCameraOn && <Webcam ref={webcamRef} screenshotFormat="image/png" className="w-64 h-48 border" />}
+      
+      <Box display="flex" gap={2} marginTop={2}>
+        <Button variant="contained" onClick={() => setIsCameraOn(true)}>Iniciar Cámara</Button>
+        <Button variant="outlined" onClick={() => setIsCameraOn(false)}>Parar Cámara</Button>
+      </Box>
+      
+      {isCameraOn && <Button onClick={capturePhoto} variant="outlined" sx={{ marginTop: 1 }}>Tomar Foto</Button>}
       
       <TextField
         label="Nombre"
