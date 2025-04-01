@@ -16,6 +16,7 @@ const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
   const [wins, setWins] = useState(0);
   const [losses, setLosses] = useState(0);
   const [ties, setTies] = useState(0);
+  const [victoryPercen, setVictoryPercen] = useState(0);
 
   const determineWinner = (player: string, opponent: string) => {
     if (player === opponent) return "Empate";
@@ -40,6 +41,11 @@ const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
     if (gameResult === "Ganaste") setWins((prev) => prev + 1);
     if (gameResult === "Perdiste") setLosses((prev) => prev + 1);
     if (gameResult === "Empate") setTies((prev) => prev + 1);
+
+    //Ponemos el porcentage
+    const totalGames = wins + losses + ties + 1;
+    const percentage = ((wins / totalGames ) * 100).toFixed(2);
+    setVictoryPercen(Number(percentage));
 
     // Notificación
     // Personalización del toast
@@ -67,6 +73,7 @@ const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
     setWins(0);
     setLosses(0);
     setTies(0);
+    setVictoryPercen(0);
   };
 
   return (
@@ -105,7 +112,7 @@ const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
           Elegiste: {playerChoice}
         </Typography>
         <Typography variant="h6" marginBottom={2}>
-          Rival eligió: {opponentChoice}
+          La máquina eligió: {opponentChoice}
         </Typography>
         <Typography variant="h6">{result}</Typography>
 
@@ -122,31 +129,36 @@ const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
         padding={3}
         width="300px"
       >
-        <Typography variant="h5" marginBottom={2} textAlign="center">
-          Marcador
+        <Typography variant="h5" marginBottom={2} minWidth="200px" textAlign="center"  sx={{ backgroundColor: '#ff0606', padding: '8px', borderRadius: '8px'}}>
+          ⚔ Marcador ⚔
         </Typography>
 
         {/* Contador del jugador con avatar y número alineados en la misma línea */}
-        <Box display="flex" alignItems="center"  justifyContent="space-between" gap={1}>
+        <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
           <Avatar
             alt={playerName}
             src={playerPhoto}
             sx={{ width: 30, height: 30 }}
           />
-          <Typography variant="h6">Jugador:</Typography>
+          <Typography  variant="h6">{playerName}:</Typography>
           <Typography variant="h6">{wins}</Typography>
         </Box>
 
         {/* Contador de la máquina con icono y número alineados en la misma línea */}
-        <Box display="flex" alignItems="center" justifyContent="space-between" gap={1}>
+        <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
           <Typography variant="h6" textAlign="center" minWidth="100px">🤖 Máquina:</Typography>
           <Typography variant="h6">{losses}</Typography>
         </Box>
 
         {/* Contador de empates */}
-        <Box display="flex" alignItems="center" justifyContent="space-between" gap={1}>
+        <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
           <Typography variant="h6" textAlign="center" minWidth="100px">Empates:</Typography>
           <Typography variant="h6">{ties}</Typography>
+        </Box>
+          {/*Tanto por ciento de victorias*/}
+        <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
+          <Typography variant="h6" textAlign="center" minWidth="100px">% de victorias:</Typography>
+          <Typography variant="h6">{victoryPercen}</Typography>
         </Box>
 
         <Button
