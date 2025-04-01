@@ -13,6 +13,9 @@ const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
   const [playerChoice, setPlayerChoice] = useState('');
   const [opponentChoice, setOpponentChoice] = useState('');
   const [result, setResult] = useState('');
+  const [wins, setWins] = useState(0);
+  const [losses, setLosses] = useState(0);
+  const [ties, setTies] = useState(0);
 
   const determineWinner = (player: string, opponent: string) => {
     if (player === opponent) return 'Empate';
@@ -32,36 +35,61 @@ const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
     setOpponentChoice(opponent);
     const gameResult = determineWinner(choice, opponent);
     setResult(gameResult);
+
+    // Actualizar el contador
+    if (gameResult === 'Ganaste') setWins((prev) => prev + 1);
+    if (gameResult === 'Perdiste') setLosses((prev) => prev + 1);
+    if (gameResult === 'Empate') setTies((prev) => prev + 1);
+
+    // Notificación
     toast(gameResult === 'Empate' ? 'Es un empate' : `¡${gameResult}!`, {
       position: 'top-center',
       type: gameResult === 'Empate' ? 'info' : gameResult === 'Ganaste' ? 'success' : 'error',
     });
   };
 
+  const handleResetScoreboard = () => {
+    setWins(0);
+    setLosses(0);
+    setTies(0);
+  };
+
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" padding={3}>
-      <Avatar alt={playerName} src={playerPhoto} sx={{ width: 100, height: 100, marginBottom: 2 }} />
-      <Typography variant="h5" marginBottom={2}>{playerName}</Typography>
-      
-      <Box display="flex" justifyContent="space-around" width="100%" marginBottom={2}>
-        {choices.map((choice) => (
-          <Button
-            key={choice}
-            variant="contained"
-            onClick={() => handleChoice(choice)}
-          >
-            {choice}
-          </Button>
-        ))}
+    <Box display="flex" justifyContent="center" padding={3}>
+      {/* Columna izquierda: Juego */}
+      <Box display="flex" flexDirection="column" alignItems="center" padding={3} borderRight={1} borderColor="grey.300">
+        <Avatar alt={playerName} src={playerPhoto} sx={{ width: 100, height: 100, marginBottom: 2 }} />
+        <Typography variant="h5" marginBottom={2}>{playerName}</Typography>
+
+        <Box display="flex" justifyContent="center" gap={2} marginBottom={2}>
+          {choices.map((choice) => (
+            <Button key={choice} variant="contained" onClick={() => handleChoice(choice)}>
+              {choice}
+            </Button>
+          ))}
+        </Box>
+
+        <Typography variant="h6" marginBottom={2}>Elegiste: {playerChoice}</Typography>
+        <Typography variant="h6" marginBottom={2}>Rival eligió: {opponentChoice}</Typography>
+        <Typography variant="h6">{result}</Typography>
+
+        <Button variant="outlined" onClick={onReset} sx={{ marginTop: 3 }}>
+          Jugar otra vez
+        </Button>
       </Box>
-      
-      <Typography variant="h6" marginBottom={2}>Elegiste: {playerChoice}</Typography>
-      <Typography variant="h6" marginBottom={2}>Rival eligió: {opponentChoice}</Typography>
-      <Typography variant="h6">{result}</Typography>
-      
-      <Button variant="outlined" onClick={onReset} sx={{ marginTop: 3 }}>
-        Jugar otra vez
-      </Button>
+
+      {/* Columna derecha: Contador */}
+      <Box display="flex" flexDirection="column" alignItems="center" padding={3} width="300px">
+        <Typography variant="h5" marginBottom={2} textAlign="center">Marcador</Typography>
+        
+        <Typography variant="h6" textAlign="center">Jugador: {wins}</Typography>
+        <Typography variant="h6" textAlign="center">Máquina: {losses}</Typography>
+        <Typography variant="h6" textAlign="center">Empates: {ties}</Typography>
+
+        <Button variant="contained" color="secondary" onClick={handleResetScoreboard} sx={{ marginTop: 2 }}>
+          Reiniciar Marcador
+        </Button>
+      </Box>
     </Box>
   );
 };
