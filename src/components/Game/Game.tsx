@@ -81,10 +81,25 @@ const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
       {/* Columna derecha: Contador */}
       <Box display="flex" flexDirection="column" alignItems="center" padding={3} width="300px">
         <Typography variant="h5" marginBottom={2} textAlign="center">Marcador</Typography>
-        
-        <Typography variant="h6" textAlign="center">Jugador: {wins}</Typography>
-        <Typography variant="h6" textAlign="center">Máquina: {losses}</Typography>
-        <Typography variant="h6" textAlign="center">Empates: {ties}</Typography>
+
+        {/* Contador del jugador con avatar y número alineados en la misma línea */}
+        <Box display="flex" alignItems="center" gap={1}>
+          <Avatar alt={playerName} src={playerPhoto} sx={{ width: 30, height: 30 }} />
+          <Typography variant="h6">Jugador:</Typography>
+          <Typography variant="h6">{wins}</Typography>
+        </Box>
+
+        {/* Contador de la máquina con icono y número alineados en la misma línea */}
+        <Box display="flex" alignItems="center" gap={1}>
+          <Typography variant="h6">🤖  Máquina:</Typography>
+          <Typography variant="h6">{losses}</Typography>
+        </Box>
+
+        {/* Contador de empates */}
+        <Box display="flex" alignItems="center" gap={1}>
+          <Typography variant="h6">Empates:</Typography>
+          <Typography variant="h6">{ties}</Typography>
+        </Box>
 
         <Button variant="contained" color="secondary" onClick={handleResetScoreboard} sx={{ marginTop: 2 }}>
           Reiniciar Marcador
