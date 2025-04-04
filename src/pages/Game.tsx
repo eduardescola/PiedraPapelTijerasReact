@@ -159,7 +159,10 @@ const Game: React.FC<GameProps> = ({
   const capturePhoto = () => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
+      if(imageSrc){
       setImagePreview(imageSrc);
+      setNewPhoto(imageSrc);
+      }
     }
   };
 
