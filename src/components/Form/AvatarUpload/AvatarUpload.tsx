@@ -25,7 +25,8 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onPhotoSelected }) => {
   return (
     <Box display="flex" flexDirection="column" alignItems="center" width="100%">
       <Avatar alt="Perfil" src={imagePreview || undefined} sx={{ width: 100, height: 100, marginBottom: 2 }} />
-      <input type="file" accept="image/*" onChange={handleImageChange} style={{ marginBottom: "12px" }} />
+      {/* Faltaria traducir este boton, pero input no lo permite */}
+      <input type="file" accept="image/*" lang="en" onChange={handleImageChange} style={{ marginBottom: "12px" }} />
     </Box>
   );
 };
