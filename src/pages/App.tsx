@@ -1,27 +1,29 @@
 import React, { useState } from 'react';
-import ProfileForm from '../components/ProfileForm/ProfileForm';
-import Game from '../components/Game/Game';
+import ProfileForm from './ProfileForm';
+import Game from './Game';
 import ThemeSwitch from '../components/ThemeSwitch/ThemeSwitch';
-import { CssBaseline, Container, Box, Typography } from '@mui/material';
+import { CssBaseline, Container, Box, Typography, Button } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 import 'react-toastify/dist/ReactToastify.css';
+import '../traducciones/i18n';
 
 const App: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [playerName, setPlayerName] = useState('');
   const [playerPhoto, setPlayerPhoto] = useState('');
+
   const getLocalData = () => {
     return localStorage.getItem("playerResults"); 
-  }
+  };
 
-  // Función para iniciar el juego
   const startGame = (name: string, photo: string) => {
     setPlayerName(name);
     setPlayerPhoto(photo);
-    setIsGameStarted(true); // Cambia el estado a 'true' cuando el juego comienza
+    setIsGameStarted(true);
   };
 
-  // Función para resetear el juego y volver al perfil
   const resetGame = () => {
     setIsGameStarted(false);
     setPlayerName('');
@@ -32,15 +34,18 @@ const App: React.FC = () => {
     <div>
       <CssBaseline />
       <Box padding={3} display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h4">Piedra, Papel o Tijera</Typography>
+        <Typography variant="h4">{t('gameTitle')}</Typography>
         <ThemeSwitch />
       </Box>
+      <Box display="flex" justifyContent="center" gap={2}>
+        <Button variant="contained" onClick={() => i18n.changeLanguage('es')}>Español</Button>
+        <Button variant="contained" onClick={() => i18n.changeLanguage('en')}>English</Button>
+      </Box>
       <Container maxWidth="sm">
-        {/* Mostrar el formulario de perfil si el juego no ha comenzado o si no hay datos en local storage*/}
-        {isGameStarted  ? (
+        {isGameStarted ? (
           <Game playerName={playerName} playerPhoto={playerPhoto} onReset={resetGame} />
         ) : (
-          <ProfileForm onStartGame={startGame} localData={getLocalData}/>
+          <ProfileForm onStartGame={startGame} localData={getLocalData} />
         )}
       </Container>
       <ToastContainer />
