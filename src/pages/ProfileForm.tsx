@@ -8,6 +8,8 @@ const ProfileForm = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [photo, setPhoto] = useState('');
+  const [opponentName, setOpponentName] = useState('');
+  const [opponentPhoto, setOpponentPhoto] = useState('');
 
   const handleSubmit = () => {
     // Guardamos en localStorage
@@ -20,11 +22,7 @@ const ProfileForm = () => {
     <Box display="flex" flexDirection="column" gap={2}>
       <TextField label="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
       <TextField label="URL de foto" value={photo} onChange={(e) => setPhoto(e.target.value)} />
-      <OpponentProfile opponentName={''} opponentPhoto={''} setOpponentName={function (value: SetStateAction<string>): void {
-        throw new Error('Function not implemented.');
-      } } setOpponentPhoto={function (value: SetStateAction<string>): void {
-        throw new Error('Function not implemented.');
-      } } />
+      <OpponentProfile opponentName={opponentName} opponentPhoto={opponentPhoto} setOpponentName={setOpponentName} setOpponentPhoto={setOpponentPhoto} />
       <Button variant="contained" onClick={handleSubmit}>Empezar juego</Button>
     </Box>
   );
