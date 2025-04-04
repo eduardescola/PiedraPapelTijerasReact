@@ -6,10 +6,12 @@ import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 interface GameProps {
   playerName: string;
   playerPhoto: string;
+  opponentName: string;
+  opponentPhoto: string;
   onReset: () => void;
 }
 
-const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
+const Game: React.FC<GameProps> = ({ playerName, playerPhoto, opponentName, opponentPhoto, onReset }) => {
   const choices = ["Piedra", "Papel", "Tijera"];
   const [playerChoice, setPlayerChoice] = useState("");
   const [opponentChoice, setOpponentChoice] = useState("");
@@ -146,8 +148,14 @@ const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
         </Box>
 
         {/* Contador de la máquina con icono y número alineados en la misma línea */}
-        <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
-          <Typography variant="h6" textAlign="center" minWidth="100px">🤖 Máquina:</Typography>
+         {/* Oponente */}
+         <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
+          <Avatar
+            alt={opponentName}
+            src={opponentPhoto}
+            sx={{ width: 30, height: 30 }}
+          />
+          <Typography  variant="h6">{opponentName}:</Typography>
           <Typography variant="h6">{losses}</Typography>
         </Box>
 

@@ -10,14 +10,18 @@ const App: React.FC = () => {
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [playerName, setPlayerName] = useState('');
   const [playerPhoto, setPlayerPhoto] = useState('');
+  const [opponentName, setOpponentName] = useState('');
+  const [opponentPhoto, setOpponentPhoto] = useState('');
   const getLocalData = () => {
     return localStorage.getItem("playerResults"); 
   }
 
   // Función para iniciar el juego
-  const startGame = (name: string, photo: string) => {
+  const startGame = (name: string, photo: string, nameOpponent: string, photoOpponent: string) => {
     setPlayerName(name);
     setPlayerPhoto(photo);
+    setOpponentName(nameOpponent);
+    setOpponentPhoto(photoOpponent);
     setIsGameStarted(true); // Cambia el estado a 'true' cuando el juego comienza
   };
 
@@ -26,6 +30,8 @@ const App: React.FC = () => {
     setIsGameStarted(false);
     setPlayerName('');
     setPlayerPhoto('');
+    setOpponentName('');
+    setOpponentPhoto('');
   };
 
   return (
@@ -38,7 +44,7 @@ const App: React.FC = () => {
       <Container maxWidth="sm">
         {/* Mostrar el formulario de perfil si el juego no ha comenzado o si no hay datos en local storage*/}
         {isGameStarted  ? (
-          <Game playerName={playerName} playerPhoto={playerPhoto} onReset={resetGame} />
+          <Game playerName={playerName} playerPhoto={playerPhoto} opponentName={opponentName} opponentPhoto={opponentPhoto} onReset={resetGame} />
         ) : (
           <ProfileForm onStartGame={startGame}/>
         )}
