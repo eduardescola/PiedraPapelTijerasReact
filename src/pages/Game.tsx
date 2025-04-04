@@ -1,184 +1,132 @@
-import React, { useState } from "react";
-import { Button, Box, Typography, Avatar } from "@mui/material";
-import { toast } from "react-toastify";
-import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
+// Game.tsx
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button } from '@mui/material';
+import { toast } from 'react-toastify';
+import {PlayerInfo} from '../components/PlayerInfo/PlayerInfo';
+import {ChoiceButtons} from '../components/ChoiceButton/ChoiceButton';
+import {ResultDisplay} from '../components/ResultDisplay/ResultDisplay';
+import {Scoreboard} from '../components/ScoreBoard/ScoreBoard';
 
-interface GameProps {
-  playerName: string;
-  playerPhoto: string;
-  opponentName: string;
-  opponentPhoto: string;
-  onReset: () => void;
-}
-
-const Game: React.FC<GameProps> = ({ playerName, playerPhoto, opponentName, opponentPhoto, onReset }) => {
-  const choices = ["Piedra", "Papel", "Tijera"];
-  const [playerChoice, setPlayerChoice] = useState("");
-  const [opponentChoice, setOpponentChoice] = useState("");
-  const [result, setResult] = useState("");
+const Game: React.FC = () => {
+  const navigate = useNavigate();
+  const [playerName, setPlayerName] = useState('');
+  const [playerPhoto, setPlayerPhoto] = useState('');
+  const [playerChoice, setPlayerChoice] = useState('');
+  const [opponentChoice, setOpponentChoice] = useState('');
+  const [result, setResult] = useState('');
   const [wins, setWins] = useState(0);
   const [losses, setLosses] = useState(0);
   const [ties, setTies] = useState(0);
   const [victoryPercen, setVictoryPercen] = useState(0);
 
-  const determineWinner = (player: string, opponent: string) => {
-    if (player === opponent) return "Empate";
-    if (
-      (player === "Piedra" && opponent === "Tijera") ||
-      (player === "Papel" && opponent === "Piedra") ||
-      (player === "Tijera" && opponent === "Papel")
-    ) {
-      return "Ganaste";
+  const choices = ['Piedra', 'Papel', 'Tijera'];
+
+  useEffect(() => {
+    const storedData = localStorage.getItem('playerData');
+    if (!storedData) {
+      navigate('/')
+      return
+    };
+    const { name, photo } = JSON.parse(storedData);
+    setPlayerName(name);
+    setPlayerPhoto(photo);
+
+    const storedResults = localStorage.getItem('playerResults');
+    if (storedResults) {
+      const { wins, losses, ties } = JSON.parse(storedResults);
+      setWins(wins);
+      setLosses(losses);
+      setTies(ties);
     }
-    return "Perdiste";
+  }, [navigate]);
+
+  const determineWinner = (player: string, opponent: string) => {
+    if (player === opponent) return 'Empate';
+    if (
+      (player === 'Piedra' && opponent === 'Tijera') ||
+      (player === 'Papel' && opponent === 'Piedra') ||
+      (player === 'Tijera' && opponent === 'Papel')
+    ) {
+      return 'Ganaste';
+    }
+    return 'Perdiste';
   };
 
   const handleChoice = (choice: string) => {
-    setPlayerChoice(choice);
     const opponent = choices[Math.floor(Math.random() * choices.length)];
+    const result = determineWinner(choice, opponent);
+
+    setPlayerChoice(choice);
     setOpponentChoice(opponent);
-    const gameResult = determineWinner(choice, opponent);
-    setResult(gameResult);
+    setResult(result);
 
-    // Actualizar el contador
-    if (gameResult === "Ganaste") setWins((prev) => prev + 1);
-    if (gameResult === "Perdiste") setLosses((prev) => prev + 1);
-    if (gameResult === "Empate") setTies((prev) => prev + 1);
+    let newWins = wins;
+    let newLosses = losses;
+    let newTies = ties;
 
-    //Ponemos el porcentage
-    const totalGames = wins + losses + ties + 1;
-    const percentage = ((wins / totalGames ) * 100).toFixed(2);
-    setVictoryPercen(Number(percentage));
+    if (result === 'Ganaste') newWins++;
+    if (result === 'Perdiste') newLosses++;
+    if (result === 'Empate') newTies++;
 
-    // Notificación
-    // Personalización del toast
-    toast(gameResult === "Empate" ? "😐 ¡Es un empate!" : gameResult === "Ganaste" ? "🏆 ¡Has ganado!" : "💀 Perdiste...", {
+    setWins(newWins);
+    setLosses(newLosses);
+    setTies(newTies);
+
+    const totalGames = newWins + newLosses + newTies;
+    setVictoryPercen(Number(((newWins / totalGames) * 100).toFixed(2)));
+
+    // Guardar en localStorage
+    localStorage.setItem('playerResults', JSON.stringify({
+      wins: newWins,
+      losses: newLosses,
+      ties: newTies,
+    }));
+
+    toast(result === "Empate" ? "😐 ¡Es un empate!" : result === "Ganaste" ? "🏆 ¡Has ganado!" : "💀 Perdiste...", {
       position: "bottom-right",
       autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      icon: () => <span>{gameResult === "Ganaste" ? "🔥" : gameResult === "Empate" ? "🤝" : "☠️"}</span>, // 👈 Aquí está la corrección
       style: {
-        background: gameResult === "Ganaste" ? "#28a745" : gameResult === "Empate" ? "#ffc107" : "#dc3545",
+        background: result === "Ganaste" ? "#28a745" : result === "Empate" ? "#ffc107" : "#dc3545",
         color: "white",
         fontWeight: "bold",
-        fontSize: "16px",
         borderRadius: "8px",
-        textAlign: "center",
       },
     });
-    
   };
 
-  const handleResetScoreboard = () => {
+  const resetScoreboard = () => {
     setWins(0);
     setLosses(0);
     setTies(0);
     setVictoryPercen(0);
+    localStorage.removeItem('playerResults');
+  };
+
+  const resetGame = () => {
+    localStorage.removeItem('playerData');
+    localStorage.removeItem('playerResults');
+    navigate('/');
   };
 
   return (
     <Box display="flex" justifyContent="center" padding={3}>
-      {/* Columna izquierda: Juego */}
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        padding={3}
-        borderRight={1}
-        borderColor="grey.300"
-      >
-        <Avatar
-          alt={playerName}
-          src={playerPhoto}
-          sx={{ width: 100, height: 100, marginBottom: 2 }}
-        />
-        <Typography variant="h5" textAlign="center" minWidth="100px" marginBottom={2}>
-          {playerName}
-        </Typography>
-
-        <Box display="flex" justifyContent="space-between" gap={2} marginBottom={2}>
-          {choices.map((choice) => (
-            <Button
-              key={choice}
-              variant="contained"
-              onClick={() => handleChoice(choice)}
-            >
-              {choice}
-            </Button>
-          ))}
-        </Box>
-
-        <Typography variant="h6" marginBottom={2}>
-          Elegiste: {playerChoice}
-        </Typography>
-        <Typography variant="h6" marginBottom={2}>
-          La máquina eligió: {opponentChoice}
-        </Typography>
-        <Typography variant="h6">{result}</Typography>
-
-        <Button variant="outlined" onClick={onReset} sx={{ marginTop: 3 }}>
-          Jugar otra vez
-        </Button>
+      <Box display="flex" flexDirection="column" alignItems="center" padding={3} borderRight={1} borderColor="grey.300">
+        <PlayerInfo name={playerName} photo={playerPhoto} />
+        <ChoiceButtons choices={choices} onSelect={handleChoice} />
+        <ResultDisplay playerChoice={playerChoice} opponentChoice={opponentChoice} result={result} />
+        <Button variant="outlined" onClick={resetGame} sx={{ marginTop: 3 }}>Jugar otra vez</Button>
       </Box>
 
-      {/* Columna derecha: Contador */}
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        padding={3}
-        width="300px"
-      >
-        <Typography variant="h5" marginBottom={2} minWidth="200px" textAlign="center"  sx={{ backgroundColor: '#ff0606', padding: '8px', borderRadius: '8px'}}>
-          ⚔ Marcador ⚔
-        </Typography>
-
-        {/* Contador del jugador con avatar y número alineados en la misma línea */}
-        <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
-          <Avatar
-            alt={playerName}
-            src={playerPhoto}
-            sx={{ width: 30, height: 30 }}
-          />
-          <Typography  variant="h6">{playerName}:</Typography>
-          <Typography variant="h6">{wins}</Typography>
-        </Box>
-
-        {/* Contador de la máquina con icono y número alineados en la misma línea */}
-         {/* Oponente */}
-         <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
-          <Avatar
-            alt={opponentName}
-            src={opponentPhoto}
-            sx={{ width: 30, height: 30 }}
-          />
-          <Typography  variant="h6">{opponentName}:</Typography>
-          <Typography variant="h6">{losses}</Typography>
-        </Box>
-
-        {/* Contador de empates */}
-        <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
-          <Typography variant="h6" textAlign="center" minWidth="100px">Empates:</Typography>
-          <Typography variant="h6">{ties}</Typography>
-        </Box>
-          {/*Tanto por ciento de victorias*/}
-        <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
-          <Typography variant="h6" textAlign="center" minWidth="100px">% de victorias:</Typography>
-          <Typography variant="h6">{victoryPercen}</Typography>
-        </Box>
-
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleResetScoreboard}
-          sx={{ marginTop: 2 }}
-        >
-          Reiniciar Marcador
-        </Button>
-      </Box>
+      <Scoreboard
+        name={playerName}
+        photo={playerPhoto}
+        wins={wins}
+        losses={losses}
+        ties={ties}
+        percent={victoryPercen}
+        onReset={resetScoreboard}
+      />
     </Box>
   );
 };
