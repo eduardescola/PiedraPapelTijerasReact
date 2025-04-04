@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ProfileForm from '../components/ProfileForm/ProfileForm';
-import Game from '../components/Game/Game';
+import ProfileForm from './ProfileForm';
+import Game from './Game';
 import ThemeSwitch from '../components/ThemeSwitch/ThemeSwitch';
 import { CssBaseline, Container, Box, Typography } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
@@ -40,7 +40,7 @@ const App: React.FC = () => {
         {isGameStarted  ? (
           <Game playerName={playerName} playerPhoto={playerPhoto} onReset={resetGame} />
         ) : (
-          <ProfileForm onStartGame={startGame} localData={getLocalData}/>
+          <ProfileForm onStartGame={startGame}/>
         )}
       </Container>
       <ToastContainer />
