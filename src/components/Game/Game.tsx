@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Box, Typography, Avatar } from "@mui/material";
 import { toast } from "react-toastify";
+import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 
 interface GameProps {
   playerName: string;
