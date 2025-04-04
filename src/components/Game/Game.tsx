@@ -158,8 +158,8 @@ const Game: React.FC<GameProps> = ({ playerName, playerPhoto, onReset }) => {
         </Box>
           {/*Tanto por ciento de victorias*/}
         <Box display="flex" justifyContent="flex-start" alignItems="flex-start" gap={1} sx={{ width: '100%' }}>
-          <Typography variant="h6" textAlign="center" minWidth="100px">% de victorias:</Typography>
-          <Typography variant="h6">{victoryPercen}</Typography>
+          <Typography variant="h6" alignItems="flex-start" justifyContent="flex-start"> % de victorias:</Typography>
+          <Typography variant="h6" alignItems="flex-start" justifyContent="flex-start" sx={{ color: victoryPercen >= 50 || victoryPercen == 0 ? "green" : "red" }}>{victoryPercen}</Typography>
         </Box>
 
         <Button
